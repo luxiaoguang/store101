@@ -1,4 +1,4 @@
 # store101
 store study
 
-http://luxiaoguang.github.io/store101/index.html/
+https://luxiaoguang.github.io/store101/index.html#1
