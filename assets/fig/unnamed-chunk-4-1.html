@@ -1,0 +1,238 @@
+<!doctype HTML>
+<meta charset = 'utf-8'>
+<html>
+  <head>
+    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.min.css'>
+    
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js' type='text/javascript'></script>
+    <script src='//d3js.org/d3.v3.min.js' type='text/javascript'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.min.js' type='text/javascript'></script>
+    <script src='//nvd3.org/assets/lib/fisheye.js' type='text/javascript'></script>
+    
+    <style>
+    .rChart {
+      display: block;
+      margin-left: auto; 
+      margin-right: auto;
+      width: 800px;
+      height: 400px;
+    }  
+    </style>
+    
+  </head>
+  <body >
+    
+    <div id = 'chart1b3c7e7d6fbc' class = 'rChart nvd3'></div>    
+    <script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart1b3c7e7d6fbc()
+    });
+    function drawchart1b3c7e7d6fbc(){  
+      var opts = {
+ "dom": "chart1b3c7e7d6fbc",
+"width":    800,
+"height":    400,
+"x": "shop_month",
+"y": "quantity",
+"group": "shop_year",
+"type": "multiBarChart",
+"id": "chart1b3c7e7d6fbc" 
+},
+        data = [
+ {
+ "shop_month": "08",
+"sales":      3246302.3,
+"quantity": 441204,
+"shop_year": "2013" 
+},
+{
+ "shop_month": "09",
+"sales":      3309174.8,
+"quantity": 347562,
+"shop_year": "2013" 
+},
+{
+ "shop_month": "10",
+"sales":      3008963.9,
+"quantity": 350632,
+"shop_year": "2013" 
+},
+{
+ "shop_month": "11",
+"sales":      3376325.1,
+"quantity": 363357,
+"shop_year": "2013" 
+},
+{
+ "shop_month": "12",
+"sales":      3788780.6,
+"quantity": 396232,
+"shop_year": "2013" 
+},
+{
+ "shop_month": "01",
+"sales":      6242834.4,
+"quantity": 488831,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "02",
+"sales":      2919832.6,
+"quantity": 241441,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "03",
+"sales":      2886591.6,
+"quantity": 297673,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "04",
+"sales":      3138537.4,
+"quantity": 340070,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "05",
+"sales":        2945621,
+"quantity": 331443,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "06",
+"sales":      2913301.6,
+"quantity": 346379,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "07",
+"sales":      3254760.6,
+"quantity": 399918,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "08",
+"sales":      3547200.5,
+"quantity": 399844,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "09",
+"sales":      3091427.6,
+"quantity": 315283,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "10",
+"sales":      3017532.1,
+"quantity": 335358,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "11",
+"sales":      3196507.8,
+"quantity": 330898,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "12",
+"sales":      4133623.1,
+"quantity": 379164,
+"shop_year": "2014" 
+},
+{
+ "shop_month": "01",
+"sales":     15423855.2,
+"quantity": 354198,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "02",
+"sales":      5729655.7,
+"quantity": 411146,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "03",
+"sales":      2323956.9,
+"quantity": 221408,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "04",
+"sales":      2534820.7,
+"quantity": 273003,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "05",
+"sales":      2293598.5,
+"quantity": 244494,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "06",
+"sales":      2445570.2,
+"quantity": 272743,
+"shop_year": "2015" 
+},
+{
+ "shop_month": "07",
+"sales":      3011401.3,
+"quantity": 343574,
+"shop_year": "2015" 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+    
+    <script></script>    
+  </body>
+</html>

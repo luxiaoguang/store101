@@ -1,0 +1,92 @@
+---
+title       : Store 101 monthly sales study
+subtitle    : From 2013-8 to 2015-7
+author      : luxiaoguang_leon@hotmail.com
+job         : data science
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+ext_widgets : {rCharts: [libraries/nvd3]}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Getting Data
+
+```{r, echo = F,message=FALSE,warning=FALSE}
+library(RMySQL)
+
+RTest<-dbConnect(MySQL(),user="devuser2",password="luxiaoguang",db="RTest",
+                 host="dev-platform-db.czec8chdqeuo.rds.cn-north-1.amazonaws.com.cn")
+allTables<-dbListTables(RTest)
+length(allTables)
+allTables[1:5]
+dbListFields(RTest,"bnh_basks")
+dbGetQuery(RTest,"select count(*) from bnh_basks")
+basksData<-dbReadTable(RTest,"bnh_basks")
+dbDisconnect(RTest)
+```
+
+
+
+--- .class #id 
+
+## Cleaning Data
+```{r, echo=FALSE}
+library(dplyr)
+##remove 0 bask_spend obs.
+basksDataclean<-filter(basksData,basksData$bask_spend>0)
+##table(basksDataclean$bask_discount)
+##table(basksDataclean$payment_type)
+#remove empty data variables
+basksDataclean<-select(basksDataclean,bask_id:bask_quantity)
+#change numeric variables to character variables
+basksDataclean$bask_id<-as.character(basksDataclean$bask_id)
+basksDataclean$cust_id<-as.character(basksDataclean$cust_id)
+basksDataclean$store_id<-as.character(basksDataclean$store_id)
+#remove repeat variables
+basksDataclean<-basksDataclean[,c(2,4,6,7,9,10)]
+tail(basksDataclean)
+```
+
+
+
+---.
+
+
+
+
+## Sales Study
+```{r nvd3plot1, results = 'asis', comment = NA, message = F, echo = F}
+require(rCharts)
+options(RCHART_WIDTH = 800, RCHART_HEIGHT = 500)
+basksDataclean$shop_datetime<-substr(basksDataclean$shop_datetime,1,7)
+salesmonth<-group_by(basksDataclean,shop_datetime)
+salesmonthsummary<-summarize(salesmonth,sales=sum(bask_spend),quantity=sum(bask_quantity))
+colnames(salesmonthsummary)[1]<-c("shop_month")
+salesmonthsummary$shop_year<-substr(salesmonthsummary$shop_month,1,4)
+salesmonthsummary$shop_month<-substr(salesmonthsummary$shop_month,6,8)
+
+n1 <- nPlot(sales ~ shop_month, group = 'shop_year', type = 'multiBarChart',
+                        data = salesmonthsummary)
+n1$show('inline')
+```
+
+
+---.
+
+
+
+## Sales Study
+```{r nvd3plot2, results = 'asis', comment = NA, message = F, echo = F}
+require(rCharts)
+options(RCHART_WIDTH = 800, RCHART_HEIGHT = 500)
+n2 <- nPlot(quantity ~ shop_month, group = 'shop_year', type = 'multiBarChart',
+                        data = salesmonthsummary)
+n2$show('inline')
+```
+
+
+
+
